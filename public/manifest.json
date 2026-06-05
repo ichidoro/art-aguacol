@@ -1,0 +1,23 @@
+{
+  "name": "Control de Calidad Aguacol QC",
+  "short_name": "Aguacol QC",
+  "description": "Inspección, comparación y auditoría de etiquetas de empaques Aguacol S.A.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0f172a",
+  "theme_color": "#10b981",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/9131/9131546.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/9131/9131546.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}

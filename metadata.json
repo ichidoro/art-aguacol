@@ -1,0 +1,6 @@
+{
+  "name": "Etiquetas Aguacol",
+  "description": "Aplicación de comparación automática de artes de empaque para detectar discrepancias visuales, cambios de color, tipografía, proporciones e imágenes entre formatos antiguos y nuevos de Aguacol SpA.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
