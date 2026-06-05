@@ -70,14 +70,31 @@ export default function AuthScreen({ onLoginSuccess }: AuthScreenProps) {
       }
     }
 
+    // Detect if already running as installed PWA (standalone mode)
+    const isStandalone = window.matchMedia("(display-mode: standalone)").matches
+      || (window.navigator as any).standalone === true;
+    if (isStandalone) {
+      setIsPwaInstalled(true);
+    }
+
     // Capture install prompt for PWA installation
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
       setInstallPrompt(e);
     };
 
+    // Listen for successful installation
+    const handleAppInstalled = () => {
+      setIsPwaInstalled(true);
+      setInstallPrompt(null);
+    };
+
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
-    return () => window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    window.addEventListener("appinstalled", handleAppInstalled);
+    return () => {
+      window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+      window.removeEventListener("appinstalled", handleAppInstalled);
+    };
   }, []);
 
   const handleAuth = (e: FormEvent) => {
@@ -598,35 +615,48 @@ export default function AuthScreen({ onLoginSuccess }: AuthScreenProps) {
 
       {/* Download and Offline Installation Panel */}
       <footer className="w-full max-w-md mx-auto text-center mt-6">
-        <div className="bg-slate-850 p-4 rounded-xl border border-slate-800/80 shadow">
+        <div className={`bg-slate-850 p-4 rounded-xl border shadow ${isPwaInstalled ? 'border-emerald-800/60' : 'border-slate-800/80'}`}>
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-emerald-400">
-              <Download className="w-4.5 h-4.5" />
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${isPwaInstalled ? 'bg-emerald-900/40 text-emerald-400' : 'bg-slate-800 text-emerald-400'}`}>
+              {isPwaInstalled ? <Check className="w-4.5 h-4.5" /> : <Download className="w-4.5 h-4.5" />}
             </div>
             <div className="text-left flex-1">
-              <h4 className="text-xs font-semibold text-slate-250">Instalar en Dispositivos</h4>
-              <p className="text-[10px] text-slate-400 leading-tight">Agregue esta app como PWA para acceso instantáneo offline.</p>
+              {isPwaInstalled ? (
+                <>
+                  <h4 className="text-xs font-semibold text-emerald-400">✅ Aplicación Instalada</h4>
+                  <p className="text-[10px] text-slate-400 leading-tight">La app ya está instalada en este dispositivo. No es necesario reinstalar.</p>
+                </>
+              ) : (
+                <>
+                  <h4 className="text-xs font-semibold text-slate-250">Instalar en Dispositivos</h4>
+                  <p className="text-[10px] text-slate-400 leading-tight">Agregue esta app como PWA para acceso instantáneo offline.</p>
+                </>
+              )}
             </div>
-            <button
-              onClick={triggerInstall}
-              type="button"
-              className="px-3 py-1.5 bg-slate-800 hover:bg-slate-750 active:bg-slate-900 border border-slate-700 text-xs font-medium rounded-lg text-emerald-400 cursor-pointer flex items-center gap-1 transition-colors"
-            >
-              {isPwaInstalled ? <Check className="w-3.5 h-3.5" /> : <Download className="w-3.5 h-3.5" />}
-              {isPwaInstalled ? "Instalado" : "Instalar"}
-            </button>
+            {!isPwaInstalled && (
+              <button
+                onClick={triggerInstall}
+                type="button"
+                className="px-3 py-1.5 bg-slate-800 hover:bg-slate-750 active:bg-slate-900 border border-slate-700 text-xs font-medium rounded-lg text-emerald-400 cursor-pointer flex items-center gap-1 transition-colors"
+              >
+                <Download className="w-3.5 h-3.5" />
+                Instalar
+              </button>
+            )}
           </div>
 
-          <div className="grid grid-cols-2 gap-3 mt-3 pt-3 border-t border-slate-800/80 text-[10px] text-slate-400">
-            <div className="flex items-center gap-1.5 justify-center">
-              <Laptop className="w-3.5 h-3.5 text-slate-500" />
-              <span>Soporte PC, Mac y Linux</span>
+          {!isPwaInstalled && (
+            <div className="grid grid-cols-2 gap-3 mt-3 pt-3 border-t border-slate-800/80 text-[10px] text-slate-400">
+              <div className="flex items-center gap-1.5 justify-center">
+                <Laptop className="w-3.5 h-3.5 text-slate-500" />
+                <span>Soporte PC, Mac y Linux</span>
+              </div>
+              <div className="flex items-center gap-1.5 justify-center">
+                <Smartphone className="w-3.5 h-3.5 text-slate-500" />
+                <span>iPhone, iPad y Android</span>
+              </div>
             </div>
-            <div className="flex items-center gap-1.5 justify-center">
-              <Smartphone className="w-3.5 h-3.5 text-slate-500" />
-              <span>iPhone, iPad y Android</span>
-            </div>
-          </div>
+          )}
         </div>
 
         <p className="text-[10px] text-slate-500 mt-4 text-center">
