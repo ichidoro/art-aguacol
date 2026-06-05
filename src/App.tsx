@@ -22,10 +22,10 @@ import UploadZone from "./components/UploadZone";
 import AguacolLogo from "./components/AguacolLogo";
 import CompareViewer from "./components/CompareViewer";
 import AuthScreen from "./components/AuthScreen";
+import Sidebar from "./components/Sidebar";
 import { ComparisonReport, ComparisonData, DiscrepancyAlert, UserAccount } from "./types";
 import { downloadReportPDF } from "./utils/pdfGenerator";
 import { compressBase64Image } from "./utils/compressor";
-import { LogOut, User as UserIcon } from "lucide-react";
 
 // Import sample packaging design mockups as base64 or custom static descriptions
 import { SAMPLE_OLD_LABEL, SAMPLE_NEW_LABEL, SAMPLE_OLD_AROMATIZANTE, SAMPLE_NEW_AROMATIZANTE } from "./sampleLabels";
@@ -124,6 +124,9 @@ export default function App() {
     setCurrentUser(null);
     localStorage.removeItem("_aguacol_logged_in_user");
   };
+
+  // Active module for sidebar navigation
+  const [activeModule, setActiveModule] = useState("revision-etiquetas");
 
   // History list
   const [history, setHistory] = useState<ComparisonReport[]>([]);
@@ -586,49 +589,37 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 font-sans antialiased">
-      {/* HEADER COCKPIT BAR */}
-      <header className="bg-slate-900 text-white shadow-md border-b-4 border-emerald-500 no-print">
-        <div className="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-emerald-500 rounded-lg flex items-center justify-center font-bold text-slate-900 tracking-wider text-xl shadow shadow-emerald-400">
-              AQ
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-xl font-bold uppercase tracking-tight">ETIQUETAS AGUACOL</h1>
-                <span className="bg-emerald-500/25 text-emerald-400 text-[10px] px-2 py-0.5 rounded font-mono border border-emerald-500/30">Vision AI QA v1.8</span>
-              </div>
-              <p className="text-xs text-slate-400 font-light">
-                Sistema Automatizado de Control de Calidad de Etiquetas y Artes Gráficos
-              </p>
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700/50">
-              <UserIcon className="w-4 h-4 text-emerald-400" />
-              <div className="text-left">
-                <span className="text-[9px] text-slate-400 uppercase font-bold tracking-wider block">Inspector</span>
-                <span className="text-xs font-semibold text-slate-250 block">{currentUser.fullName}</span>
-              </div>
-              <button 
-                onClick={handleLogout}
-                title="Cerrar Sesión"
-                className="ml-2 p-1 text-slate-400 hover:text-red-400 active:text-red-500 rounded transition-colors cursor-pointer flex items-center justify-center"
-              >
-                <LogOut className="w-3.5 h-3.5" />
-              </button>
-            </div>
-            
-            <div className="border-l border-slate-700 pl-3 hidden md:block h-8"></div>
-            <AguacolLogo className="h-10 md:h-12 w-auto shadow-md rounded-lg" />
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen bg-slate-50 text-slate-800 font-sans antialiased flex">
+      {/* SIDEBAR NAVIGATION */}
+      <Sidebar
+        currentUser={currentUser}
+        activeModule={activeModule}
+        onModuleChange={setActiveModule}
+        onLogout={handleLogout}
+      />
 
-      {/* DASHBOARD CONTAINER */}
-      <main className="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8 no-print">
+      {/* MAIN CONTENT AREA */}
+      <div className="flex-1 min-h-screen flex flex-col overflow-x-hidden">
+        {/* HEADER COCKPIT BAR */}
+        <header className="bg-slate-900 text-white shadow-md border-b-4 border-emerald-500 no-print">
+          <div className="px-4 py-3 sm:px-6 lg:px-8 flex justify-between items-center">
+            <div className="flex items-center gap-3 pl-10 lg:pl-0">
+              <div>
+                <div className="flex items-center gap-2">
+                  <h1 className="text-lg font-bold uppercase tracking-tight">ETIQUETAS AGUACOL</h1>
+                  <span className="bg-emerald-500/25 text-emerald-400 text-[10px] px-2 py-0.5 rounded font-mono border border-emerald-500/30">Vision AI QA v1.8</span>
+                </div>
+                <p className="text-xs text-slate-400 font-light">
+                  Sistema Automatizado de Control de Calidad de Etiquetas y Artes Gráficos
+                </p>
+              </div>
+            </div>
+            <AguacolLogo className="h-9 md:h-11 w-auto shadow-md rounded-lg" />
+          </div>
+        </header>
+
+        {/* DASHBOARD CONTAINER */}
+        <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8 no-print">
         {/* STATS TILES */}
         <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm flex items-center gap-3">
@@ -1664,6 +1655,7 @@ export default function App() {
           </div>
         </div>
       )}
+      </div>{/* end content wrapper */}
     </div>
   );
 }
