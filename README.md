@@ -1,20 +1,46 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# 🏷️ Etiquetas Aguacol
 
-# Run and deploy your AI Studio app
+Sistema de **Control de Calidad Gráfica** para etiquetas de empaque. Compara artes de referencia vs. nuevas versiones usando **Gemini AI** para detectar discrepancias de color, tipografía, proporciones, logos y más.
 
-This contains everything you need to run your app locally.
+## 🚀 Instalación Rápida
 
-View your app in AI Studio: https://ai.studio/apps/f63f7b3c-7a47-419d-a609-5910c6fca41d
+**Requisitos:** [Node.js](https://nodejs.org/) v18 o superior.
 
-## Run Locally
+```bash
+# 1. Instalar dependencias
+npm install
 
-**Prerequisites:**  Node.js
+# 2. Crear archivo de variables de entorno
+#    Copia .env.example a .env y agrega tu API Key de Gemini:
+cp .env.example .env
+#    Edita .env y reemplaza MY_GEMINI_API_KEY con tu clave real
 
+# 3. Ejecutar la aplicación
+npm run dev
+```
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+La app estará disponible en **http://localhost:3000**
+
+## 🔑 Obtener API Key de Gemini
+
+1. Ve a [Google AI Studio](https://aistudio.google.com/apikey)
+2. Crea una API Key
+3. Pégala en tu archivo `.env`:
+   ```
+   GEMINI_API_KEY="tu-clave-aquí"
+   ```
+
+## 📦 Scripts Disponibles
+
+| Comando | Descripción |
+|---------|-------------|
+| `npm run dev` | Inicia el servidor de desarrollo |
+| `npm run build` | Compila para producción |
+| `npm start` | Ejecuta la versión compilada |
+
+## 🛠️ Tecnologías
+
+- **Frontend:** React 19 + Vite + TailwindCSS + Motion
+- **Backend:** Express + TypeScript
+- **AI:** Google Gemini 3.5 Flash (comparación visual de etiquetas)
+- **PDF:** jsPDF para generación de reportes
